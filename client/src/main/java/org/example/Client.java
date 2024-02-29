@@ -14,34 +14,39 @@ public class Client {
         BufferedWriter bufferedWriter = null;
         Socket socket = null;
         Scanner scanner = new Scanner(System.in);
-        String name = scanner.nextLine();
+
         try {
             socket = new Socket("localhost", 7007);
             inputStreamReader = new InputStreamReader(socket.getInputStream());
             outputStreamWriter = new OutputStreamWriter(socket.getOutputStream());
             bufferedReader = new BufferedReader(inputStreamReader);
             bufferedWriter = new BufferedWriter(outputStreamWriter);
+
+            String startResponse = bufferedReader.readLine();
+            System.out.println(startResponse);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Could not connect.");
         }
-
-        while(true){
-            try {
-                String message = scanner.nextLine();
-                String toSend = name + ": " + message;
-                bufferedWriter.write(toSend);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
-                if(message.equalsIgnoreCase("quit")){
-                    break;
-                }
-                String response = bufferedReader.readLine();
-                System.out.println(response);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-
-        }
+        MessageReceiver messageReceiver = new MessageReceiver(bufferedReader);
+        MessageSender messageSender = new MessageSender(bufferedWriter);
+        messageReceiver.start();
+        messageSender.start();
+//        while(true){
+//            try {
+//                String message = scanner.nextLine();
+//                String toSend = name + ": " + message;
+//                printWriter.flush();
+//                printWriter.println(toSend);
+//                printWriter.flush();
+//                if(message.equalsIgnoreCase("bye")){
+//                    break;
+//                }
+//                String response = bufferedReader.readLine();
+//                System.out.println(response);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//
+//        }
     }
 }
