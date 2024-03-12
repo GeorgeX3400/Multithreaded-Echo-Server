@@ -21,7 +21,7 @@ public class Server {
             socketThread.start();
         }
         catch (IOException e) {
-
+            System.out.println("Client disconnected.");
         }
 
     }
